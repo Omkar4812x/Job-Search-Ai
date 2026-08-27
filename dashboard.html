@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Job Search - Dashboard & Tracker</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-purple: #8b5cf6;
+      --accent-indigo: #6366f1;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-pink: #ec4899;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 28px;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+
+    .brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(to right, #ffffff, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Stat Grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .stat-info h3 {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Search & Filter Controls */
+    .controls {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent-purple);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    select, button.btn {
+      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    select:focus, select:hover {
+      border-color: var(--accent-purple);
+    }
+
+    button.btn-primary {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+      border: none;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+    }
+
+    button.btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .view-toggle {
+      display: flex;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .view-btn {
+      padding: 6px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn.active {
+      background: var(--accent-purple);
+      color: #fff;
+    }
+
+    /* Grid Layout */
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--glass-shadow);
+      transition: all 0.25s ease;
+    }
+
+    .job-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .job-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .company-name {
+      font-size: 14px;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-high {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .badge-portal {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+
+    .job-details {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .job-snippet {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .skill-tag {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .skill-tag:hover {
+      background: rgba(99, 102, 241, 0.35);
+      color: #fff;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-apply {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+      color: #fff;
+    }
+
+    .btn-apply:hover {
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-referral {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    .btn-referral:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Table View */
+    .table-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow-x: auto;
+      display: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div>
+          <h1>AI Job Search Assistant</h1>
+          <p>Powered by Claude Code & Multi-Portal Scraper Engine (v1.3.4)</p>
+        </div>
+      </div>
+      <div class="status-badge">
+        <span class="pulse"></span> System Operational & Scraping Active
+      </div>
+    </header>
+
+    <!-- Stats Overview -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2); color: #c084fc;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="stat-total">10</h3>
+          <p>Scraped Positions</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="stat-high">10</h3>
+          <p>High Match Fits</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee;">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="stat-portals">6</h3>
+          <p>Portals Integrated</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Applications Sent</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-box">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Filter by title, company, skill, or location...">
+      </div>
+
+      <div class="filter-group">
+        <select id="portalFilter">
+          <option value="all">All Portals</option>
+          <option value="freehire-search">Freehire.me</option>
+          <option value="linkedin-search">LinkedIn</option>
+          <option value="jobindex-search">Jobindex.dk</option>
+        </select>
+
+        <select id="fitFilter">
+          <option value="all">All Fits</option>
+          <option value="high">High Match</option>
+          <option value="medium">Medium Match</option>
+        </select>
+
+        <div class="view-toggle">
+          <button class="view-btn active" id="btnGridView" title="Grid View"><i class="fa-solid fa-grip"></i></button>
+          <button class="view-btn" id="btnTableView" title="Table View"><i class="fa-solid fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="jobs-grid" id="jobsGrid"></div>
+
+    <!-- Table View -->
+    <div class="table-container" id="tableContainer">
+      <table>
+        <thead>
+          <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Portal</th>
+            <th>Match</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Embedded Scraped Data
+    const jobData = [
+      {
+            "title": "Application Support Engineer",
+            "company": "Accenture in India",
+            "url": "https://in.linkedin.com/jobs/view/application-support-engineer-at-accenture-in-india-4448350382",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Platform Engineer I",
+            "company": "MetLife",
+            "url": "https://in.linkedin.com/jobs/view/software-platform-engineer-i-at-metlife-4455746039",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Tech Associate - Software Engineering",
+            "company": "ACS International India Pvt. Ltd. (ACSII)",
+            "url": "https://in.linkedin.com/jobs/view/tech-associate-software-engineering-at-acs-international-india-pvt-ltd-acsii-4456658028",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "BackEnd developer(HMM Mumbai) IRC300669",
+            "company": "GlobalLogic",
+            "url": "https://in.linkedin.com/jobs/view/backend-developer-hmm-mumbai-irc300669-at-globallogic-4457915431",
+            "location": "Pune City, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune City, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Associate Back-End Software Engineer",
+            "company": "Light & Wonder",
+            "url": "https://in.linkedin.com/jobs/view/associate-back-end-software-engineer-at-light-wonder-4459682517",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Softwareentwickler (m/w/d)",
+            "company": "Deutsche Telekom",
+            "url": "https://in.linkedin.com/jobs/view/softwareentwickler-m-w-d-at-deutsche-telekom-4458194180",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Engineer (Java)",
+            "company": "Veradigm®",
+            "url": "https://in.linkedin.com/jobs/view/software-engineer-java-at-veradigm%C2%AE-4420982880",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Engineer, CX",
+            "company": "NiCE",
+            "url": "https://in.linkedin.com/jobs/view/software-engineer-cx-at-nice-4456939280",
+            "location": "Pune City, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune City, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Engineer II",
+            "company": "Mastercard",
+            "url": "https://in.linkedin.com/jobs/view/software-engineer-ii-at-mastercard-4457759903",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Engineer 2 - Java (BYDS)",
+            "company": "Blue Yonder",
+            "url": "https://in.linkedin.com/jobs/view/software-engineer-2-java-byds-at-blue-yonder-4458385398",
+            "location": "Pune City, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune City, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Junior Full Stack Developer",
+            "company": "Giesecke+Devrient",
+            "url": "https://in.linkedin.com/jobs/view/junior-full-stack-developer-at-giesecke%2Bdevrient-4457459160",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Custom Software Engineer",
+            "company": "Accenture in India",
+            "url": "https://in.linkedin.com/jobs/view/custom-software-engineer-at-accenture-in-india-4448333252",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Java Developer",
+            "company": "Citi",
+            "url": "https://in.linkedin.com/jobs/view/java-developer-at-citi-4457916484",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Java Developer",
+            "company": "SAS",
+            "url": "https://in.linkedin.com/jobs/view/java-developer-at-sas-4456706158",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Java Developer - Associate",
+            "company": "Deutsche Bank",
+            "url": "https://in.linkedin.com/jobs/view/java-developer-associate-at-deutsche-bank-4459016316",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Backend Engineer– Java",
+            "company": "QuinStreet",
+            "url": "https://in.linkedin.com/jobs/view/backend-engineer%E2%80%93-java-at-quinstreet-4446993670",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Application Support Engineer",
+            "company": "Accenture in India",
+            "url": "https://in.linkedin.com/jobs/view/application-support-engineer-at-accenture-in-india-4448323639",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Developer (Mobile Applications) Internship in Pune",
+            "company": "FarmDidi",
+            "url": "https://in.linkedin.com/jobs/view/software-developer-mobile-applications-internship-in-pune-at-farmdidi-4457052181",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Java",
+                  "Fresher/Trainee",
+                  "OOP",
+                  "SQL"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Java, Fresher/Trainee, OOP, SQL)."
+      },
+      {
+            "title": "JAVA DEVELOPER (MICROSERVICES & AWS) - VOIS",
+            "company": "VOIS",
+            "url": "https://in.linkedin.com/jobs/view/java-developer-microservices-aws-vois-at-vois-4426841664",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Java Developer (Core Java, J2EE, Spring & Angular)",
+            "company": "FIS",
+            "url": "https://in.linkedin.com/jobs/view/java-developer-core-java-j2ee-spring-angular-at-fis-4444996535",
+            "location": "Pune/Pimpri-Chinchwad Area",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune/Pimpri-Chinchwad Area matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Java Microservices, AWS",
+            "company": "Tata Consultancy Services",
+            "url": "https://in.linkedin.com/jobs/view/java-microservices-aws-at-tata-consultancy-services-4459306940",
+            "location": "Pune City, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune City, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "HubSpot CMS Developer - Mumbai/Pune/Bangalore/Chennai/Hyderabad/Kolkata (8-10 Years)-Immediate Joiners!!!",
+            "company": "Anlage Digital",
+            "url": "https://in.linkedin.com/jobs/view/hubspot-cms-developer-mumbai-pune-bangalore-chennai-hyderabad-kolkata-8-10-years-immediate-joiners%21%21%21-at-anlage-digital-4459143911",
+            "location": "Pune City, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune City, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Web Developer",
+            "company": "Accenture in India",
+            "url": "https://in.linkedin.com/jobs/view/web-developer-at-accenture-in-india-4448330368",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "HTML/CSS",
+                  "JavaScript",
+                  "Web Development"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (HTML/CSS, JavaScript, Web Development)."
+      },
+      {
+            "title": "Fullstack Developer",
+            "company": "Barclays",
+            "url": "https://in.linkedin.com/jobs/view/fullstack-developer-at-barclays-4454674056",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Custom Software Engineer",
+            "company": "Accenture in India",
+            "url": "https://in.linkedin.com/jobs/view/custom-software-engineer-at-accenture-in-india-4448387442",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Software Engineer (Web Developer)",
+            "company": "Veradigm®",
+            "url": "https://in.linkedin.com/jobs/view/software-engineer-web-developer-at-veradigm%C2%AE-4449481455",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "HTML/CSS",
+                  "JavaScript",
+                  "Web Development"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (HTML/CSS, JavaScript, Web Development)."
+      },
+      {
+            "title": "UI/UX Developer | UI/UX Design + Front-End Development",
+            "company": "IT Consulting LLP",
+            "url": "https://in.linkedin.com/jobs/view/ui-ux-developer-ui-ux-design-%2B-front-end-development-at-it-consulting-llp-4458389125",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Frontend-Focused Full Stack Developer - Angular / .NET (Remote, Full-Time) [AS313]",
+            "company": "Smart Working",
+            "url": "https://in.linkedin.com/jobs/view/frontend-focused-full-stack-developer-angular-net-remote-full-time-as313-at-smart-working-4456580751",
+            "location": "Pune Division, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune Division, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Full Stack Developer",
+            "company": "FLAME University",
+            "url": "https://in.linkedin.com/jobs/view/full-stack-developer-at-flame-university-4458745362",
+            "location": "Pune District, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune District, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Full Stack Developer",
+            "company": "MIT ADT University",
+            "url": "https://in.linkedin.com/jobs/view/full-stack-developer-at-mit-adt-university-4457449983",
+            "location": "Pune District, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune District, Maharashtra, India matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      },
+      {
+            "title": "Web Development Intern",
+            "company": "Groots Software Technologies Pvt Ltd",
+            "url": "https://in.linkedin.com/jobs/view/web-development-intern-at-groots-software-technologies-pvt-ltd-4457771259",
+            "location": "Pune District, Maharashtra, India",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "HTML/CSS",
+                  "JavaScript",
+                  "Web Development"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune District, Maharashtra, India matching Omkar's resume skills (HTML/CSS, JavaScript, Web Development)."
+      },
+      {
+            "title": "PHP - Laravel Developer",
+            "company": "Deepminds Infotech Private Limited",
+            "url": "https://in.linkedin.com/jobs/view/php-laravel-developer-at-deepminds-infotech-private-limited-4455839904",
+            "location": "Pune/Pimpri-Chinchwad Area",
+            "first_seen": "2026-08-27",
+            "fit": "high",
+            "portal": "linkedin-search",
+            "skills": [
+                  "Core Java",
+                  "OOP",
+                  "MySQL",
+                  "JDBC"
+            ],
+            "snippet": "Entry-level/Fresher compatible role in Pune/Pimpri-Chinchwad Area matching Omkar's resume skills (Core Java, OOP, MySQL, JDBC)."
+      }
+];
+
+    // DOM Elements
+    const gridEl = document.getElementById('jobsGrid');
+    const tableContainerEl = document.getElementById('tableContainer');
+    const tableBodyEl = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+    const portalFilter = document.getElementById('portalFilter');
+    const fitFilter = document.getElementById('fitFilter');
+    const btnGridView = document.getElementById('btnGridView');
+    const btnTableView = document.getElementById('btnTableView');
+
+    function renderJobs() {
+      const query = searchInput.value.toLowerCase();
+      const selectedPortal = portalFilter.value;
+      const selectedFit = fitFilter.value;
+
+      const filtered = jobData.filter(job => {
+        const matchesQuery = job.title.toLowerCase().includes(query) ||
+                             job.company.toLowerCase().includes(query) ||
+                             job.location.toLowerCase().includes(query) ||
+                             job.skills.some(s => s.toLowerCase().includes(query));
+        const matchesPortal = selectedPortal === 'all' || job.portal === selectedPortal;
+        const matchesFit = selectedFit === 'all' || job.fit === selectedFit;
+        return matchesQuery && matchesPortal && matchesFit;
+      });
+
+      // Render Grid
+      gridEl.innerHTML = filtered.map(job => `
+        <div class="job-card">
+          <div>
+            <div class="card-header">
+              <div>
+                <div class="job-title">${job.title}</div>
+                <div class="company-name"><i class="fa-regular fa-building"></i> ${job.company}</div>
+              </div>
+              <span class="badge badge-high">${job.fit} Fit</span>
+            </div>
+            <div class="job-details">
+              <span><i class="fa-solid fa-location-dot"></i> ${job.location}</span>
+              <span><i class="fa-solid fa-globe"></i> ${job.portal}</span>
+            </div>
+            <p class="job-snippet">${job.snippet}</p>
+            <div class="skills-container">
+              ${job.skills.map(s => `<span class="skill-tag" onclick="filterBySkill('${s}')">${s}</span>`).join('')}
+            </div>
+          </div>
+          <div class="card-actions">
+            <a href="${job.url}" target="_blank" class="action-btn btn-apply">
+              <i class="fa-solid fa-external-link"></i> Apply / View
+            </a>
+            <a href="https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(job.company + ' recruiter')}" target="_blank" class="action-btn btn-referral" title="Find recruiters on LinkedIn">
+              <i class="fa-brands fa-linkedin"></i> Recruiter
+            </a>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Table
+      tableBodyEl.innerHTML = filtered.map(job => `
+        <tr>
+          <td><strong>${job.title}</strong></td>
+          <td>${job.company}</td>
+          <td>${job.location}</td>
+          <td><span class="badge badge-portal">${job.portal}</span></td>
+          <td><span class="badge badge-high">${job.fit}</span></td>
+          <td>
+            <a href="${job.url}" target="_blank" style="color: var(--accent-cyan); font-weight: 500; text-decoration: none;">View Posting &rarr;</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterBySkill(skill) {
+      searchInput.value = skill;
+      renderJobs();
+    }
+
+    // Toggle Views
+    btnGridView.addEventListener('click', () => {
+      btnGridView.classList.add('active');
+      btnTableView.classList.remove('active');
+      gridEl.style.display = 'grid';
+      tableContainerEl.style.display = 'none';
+    });
+
+    btnTableView.addEventListener('click', () => {
+      btnTableView.classList.add('active');
+      btnGridView.classList.remove('active');
+      gridEl.style.display = 'none';
+      tableContainerEl.style.display = 'block';
+    });
+
+    // Filter Listeners
+    searchInput.addEventListener('input', renderJobs);
+    portalFilter.addEventListener('change', renderJobs);
+    fitFilter.addEventListener('change', renderJobs);
+
+    // Initial Render
+    renderJobs();
+  </script>
+</body>
+</html>
